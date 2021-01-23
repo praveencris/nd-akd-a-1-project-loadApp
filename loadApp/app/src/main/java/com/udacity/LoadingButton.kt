@@ -3,6 +3,9 @@ package com.udacity
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import kotlin.properties.Delegates
@@ -24,10 +27,22 @@ class LoadingButton @JvmOverloads constructor(
 
     }
 
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        textAlign = Paint.Align.CENTER
+        textSize = 40.0f
+/*
+        typeface = Typeface.create("", Typeface.BOLD)
+*/
+        color=resources.getColor(R.color.colorPrimary,null)
+    }
+
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-
+        canvas?.drawColor(resources.getColor(R.color.colorPrimary,null))
+        paint.color=Color.WHITE
+        canvas?.drawText("Download", widthSize.toFloat()/2,heightSize.toFloat()/1.6f, paint)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
