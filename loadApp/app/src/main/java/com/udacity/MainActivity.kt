@@ -23,17 +23,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
-    private lateinit var binding:ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=DataBindingUtil.setContentView(this,R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         setSupportActionBar(binding.toolbar)
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         binding.contentMain.customButton.setOnClickListener {
+            (it as LoadingButton).setState(ButtonState.Clicked)
             download()
         }
     }
@@ -41,11 +42,13 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            Toast.makeText(this@MainActivity,"Got ID",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, "Got ID", Toast.LENGTH_SHORT).show()
+            binding.contentMain.customButton.setState(ButtonState.Completed)
         }
     }
 
     private fun download() {
+        binding.contentMain.customButton.setState(ButtonState.Loading)
         val request =
             DownloadManager.Request(Uri.parse(URL))
                 .setTitle(getString(R.string.app_name))
