@@ -37,8 +37,12 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
+        val notificationManager:NotificationManager =
+            ContextCompat.getSystemService(applicationContext, NotificationManager::class.java) as NotificationManager
+
         binding.contentMain.customButton.setOnClickListener {
             (it as LoadingButton).setState(ButtonState.Clicked)
+            notificationManager.cancelAllNotification()
             when (binding.contentMain.radioGroup.checkedRadioButtonId) {
                 R.id.radioButtonGlide -> download(URL_GLIDE)
                 R.id.radioButtonLoadApp -> download(URL_LOAD_APP)
