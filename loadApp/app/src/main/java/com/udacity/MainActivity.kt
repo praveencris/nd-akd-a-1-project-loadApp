@@ -1,13 +1,16 @@
 package com.udacity
 
 import android.app.DownloadManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -41,8 +44,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.radioButtonLoadApp -> download(URL_LOAD_APP)
                 R.id.radioButtonRetrofit -> download(URL_RETROFIT)
             }
-
         }
+
+        createChannel(
+            getString(R.string.notification_channel_id), getString(
+                R.string.channel_name
+            )
+        )
     }
 
     private val receiver = object : BroadcastReceiver() {
@@ -50,12 +58,20 @@ class MainActivity : AppCompatActivity() {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             Toast.makeText(this@MainActivity, "Got ID", Toast.LENGTH_SHORT).show()
             binding.contentMain.customButton.setState(ButtonState.Completed)
-            val notificationManager:NotificationManager= ContextCompat.getSystemService(context!!,NotificationManager::class.java) as NotificationManager
-            notificationManager.sendNotification(context.getString(R.string.notification_description,downloadID),context)
+            val notificationManager: NotificationManager = ContextCompat.getSystemService(
+                context!!,
+                NotificationManager::class.java
+            ) as NotificationManager
+            notificationManager.sendNotification(
+                context.getString(
+                    R.string.notification_description,
+                    downloadID
+                ), context
+            )
         }
     }
 
-    private fun download(url: String,) {
+    private fun download(url: String) {
         binding.contentMain.customButton.setState(ButtonState.Loading)
         val request =
             DownloadManager.Request(Uri.parse(url))
@@ -85,4 +101,29 @@ class MainActivity : AppCompatActivity() {
         unregisterReceiver(receiver)
     }
 
+
+    private fun createChannel(channelId: String, channelName: String) {
+        // DONE: Step 1.6 START create a channel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_LOW
+            )
+
+            notificationChannel.apply {
+                enableLights(true)
+                lightColor = Color.RED
+                enableVibration(true)
+                description = "File downloading status"
+            }
+
+            val notificationManager =
+                ContextCompat.getSystemService(this, NotificationManager::class.java)
+                        as NotificationManager
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+
+
+    }
 }
