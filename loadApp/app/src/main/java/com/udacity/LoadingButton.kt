@@ -12,7 +12,7 @@ import android.view.animation.LinearInterpolator
 import kotlin.properties.Delegates
 
 
-private const val DURATION: Long = 6000
+private const val DURATION: Long = 2000
 
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -31,8 +31,8 @@ class LoadingButton @JvmOverloads constructor(
             ButtonState.Loading -> {
                 valueAnimator.addUpdateListener(ValueAnimator.AnimatorUpdateListener { valueAnimator ->
                     animatedWidth = valueAnimator.animatedValue as Float;
-                    valueAnimator.duration =
-                        DURATION - ((animatedWidth / widthSize) * DURATION).toLong()
+                    /*valueAnimator.duration =
+                        DURATION - ((animatedWidth / widthSize) * DURATION).toLong()*/
                     invalidate()
                 })
                 valueAnimator.start()
@@ -44,7 +44,7 @@ class LoadingButton @JvmOverloads constructor(
             }
             ButtonState.Clicked -> {
                 valueAnimator.duration = DURATION
-                rectF = RectF(widthSize.toFloat() - 200F, 20F, widthSize.toFloat() - 150F, 70F)
+                rectF = RectF(widthSize.toFloat() - 200F, heightSize.toFloat()/2-40F, widthSize.toFloat() - 120F, heightSize.toFloat()/2+40F)
             }
         }
     }
