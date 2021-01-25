@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.udacity.databinding.ActivityMainBinding
 
@@ -35,7 +36,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.contentMain.customButton.setOnClickListener {
             (it as LoadingButton).setState(ButtonState.Clicked)
-            download()
+            when (binding.contentMain.radioGroup.checkedRadioButtonId) {
+                R.id.radioButtonGlide -> download(URL_GLIDE)
+                R.id.radioButtonLoadApp -> download(URL_LOAD_APP)
+                R.id.radioButtonRetrofit -> download(URL_RETROFIT)
+            }
+
         }
     }
 
@@ -44,13 +50,15 @@ class MainActivity : AppCompatActivity() {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             Toast.makeText(this@MainActivity, "Got ID", Toast.LENGTH_SHORT).show()
             binding.contentMain.customButton.setState(ButtonState.Completed)
+            val notificationManager:NotificationManager= ContextCompat.getSystemService(context!!,NotificationManager::class.java) as NotificationManager
+            notificationManager.sendNotification(context.getString(R.string.notification_description,downloadID),context)
         }
     }
 
-    private fun download() {
+    private fun download(url: String,) {
         binding.contentMain.customButton.setState(ButtonState.Loading)
         val request =
-            DownloadManager.Request(Uri.parse(URL))
+            DownloadManager.Request(Uri.parse(url))
                 .setTitle(getString(R.string.app_name))
                 .setDescription(getString(R.string.app_description))
                 .setRequiresCharging(false)
@@ -63,9 +71,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val URL =
+        private const val URL_GLIDE =
+            "https://github.com/bumptech/glide/archive/master.zip"
+        private const val URL_LOAD_APP =
             "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
+        private const val URL_RETROFIT =
+            "https://github.com/square/retrofit/archive/master.zip"
         private const val CHANNEL_ID = "channelId"
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
     }
 
 }

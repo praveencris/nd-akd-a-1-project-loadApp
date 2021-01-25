@@ -44,6 +44,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
@@ -51,6 +52,7 @@
             android:layout_marginEnd="16dp"
             android:weightSum="3"
             android:orientation="vertical"
+            android:checkedButton="@id/radioButtonGlide"
             android:layout_marginBottom="24dp"
             app:layout_constraintBottom_toTopOf="@+id/custom_button"
             app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +61,7 @@
 
             <RadioButton
                 android:layout_weight="1"
-                android:id="@+id/radioButton"
+                android:id="@+id/radioButtonGlide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto"
@@ -67,7 +69,7 @@
                 android:text="@string/glide_library_desc" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/radioButtonLoadApp"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +78,7 @@
                 android:text="@string/load_app_desc" />
 
             <RadioButton
-                android:id="@+id/radioButton3"
+                android:id="@+id/radioButtonRetrofit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto"
