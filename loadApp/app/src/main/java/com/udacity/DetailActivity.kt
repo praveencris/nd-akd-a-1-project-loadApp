@@ -24,9 +24,6 @@ class DetailActivity : AppCompatActivity() {
 
         binding.contentDetail.buttonOk.setOnClickListener {
             this.finish()
-/*
-            startActivity(Intent(this, MainActivity::class.java))
-*/
         }
     }
 

@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
     private lateinit var binding: ActivityMainBinding
+    private lateinit var messageAndContentTextPair:Pair<String,String>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +61,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         createChannel(
-            getString(R.string.notification_channel_id), getString(
-                R.string.channel_name
-            )
+            getString(R.string.notification_channel_id),
+            getString(R.string.channel_name)
         )
     }
 
@@ -86,7 +87,6 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            val messageAndContentTextPair=getMessageAndContentText()
             binding.contentMain.customButton.setState(ButtonState.Completed)
 
             if (id == downloadID) {
@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun download(url: String) {
+        messageAndContentTextPair=getMessageAndContentText()
         binding.contentMain.customButton.setState(ButtonState.Loading)
         val request =
             DownloadManager.Request(Uri.parse(url))
