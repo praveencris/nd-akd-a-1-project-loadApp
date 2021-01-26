@@ -15,11 +15,13 @@ private val FLAGS = 0
  *
  * @param context, activity context.
  */
-fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context) {
+fun NotificationManager.sendNotification(contentText:String,messageStatusExtra: Pair<String,String>, applicationContext: Context) {
     // Create the content intent for the notification, which launches
     // this activity
 
     val contentIntent = Intent(applicationContext, DetailActivity::class.java)
+    contentIntent.putExtra(DetailActivity.FILE_NAME,messageStatusExtra.first)
+    contentIntent.putExtra(DetailActivity.FILE_STATUS,messageStatusExtra.second)
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
         NOTIFICATION_ID,
@@ -33,7 +35,7 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
         applicationContext.getString(R.string.notification_channel_id)
     )
         .setContentTitle(applicationContext.getString(R.string.notification_title))
-        .setContentText(messageBody)
+        .setContentText(contentText)
         .setSmallIcon(R.drawable.ic_assistant_black_24dp)
         .addAction(R.drawable.ic_assistant_black_24dp,applicationContext.getString(R.string.notification_button),contentPendingIntent)
         .setAutoCancel(true)

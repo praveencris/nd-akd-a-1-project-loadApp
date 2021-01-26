@@ -37,8 +37,11 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
-        val notificationManager:NotificationManager =
-            ContextCompat.getSystemService(applicationContext, NotificationManager::class.java) as NotificationManager
+        val notificationManager: NotificationManager =
+            ContextCompat.getSystemService(
+                applicationContext,
+                NotificationManager::class.java
+            ) as NotificationManager
 
         binding.contentMain.customButton.setOnClickListener {
             (it as LoadingButton).setState(ButtonState.Clicked)
@@ -47,6 +50,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.radioButtonGlide -> download(URL_GLIDE)
                 R.id.radioButtonLoadApp -> download(URL_LOAD_APP)
                 R.id.radioButtonRetrofit -> download(URL_RETROFIT)
+                else -> Toast.makeText(
+                    this@MainActivity,
+                    R.string.select_file_to_download,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -57,21 +65,45 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    private fun getMessageAndContentText(): Pair<String, String> {
+        return when (binding.contentMain.radioGroup.checkedRadioButtonId) {
+            R.id.radioButtonGlide -> Pair(
+                getString(R.string.glide_library_desc),
+                getString(R.string.notification_description, 1)
+            )
+            R.id.radioButtonLoadApp -> Pair(
+                getString(R.string.load_app_desc),
+                getString(R.string.notification_description, 2)
+            )
+            R.id.radioButtonRetrofit -> Pair(
+                getString(R.string.retrofit_desc),
+                getString(R.string.notification_description, 3)
+            )
+            else -> Pair("", "")
+        }
+    }
+
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            Toast.makeText(this@MainActivity, "Got ID", Toast.LENGTH_SHORT).show()
+            val messageAndContentTextPair=getMessageAndContentText()
             binding.contentMain.customButton.setState(ButtonState.Completed)
-            val notificationManager: NotificationManager = ContextCompat.getSystemService(
-                context!!,
-                NotificationManager::class.java
-            ) as NotificationManager
-            notificationManager.sendNotification(
-                context.getString(
-                    R.string.notification_description,
-                    downloadID
-                ), context
-            )
+
+            if (id == downloadID) {
+                val notificationManager: NotificationManager = ContextCompat.getSystemService(
+                    context!!,
+                    NotificationManager::class.java
+                ) as NotificationManager
+                notificationManager.sendNotification(
+                    messageAndContentTextPair.second,Pair(messageAndContentTextPair.first,getString(R.string.success)), context,)
+            } else {
+                val notificationManager: NotificationManager = ContextCompat.getSystemService(
+                    context!!,
+                    NotificationManager::class.java
+                ) as NotificationManager
+                notificationManager.sendNotification(
+                    messageAndContentTextPair.second,Pair(messageAndContentTextPair.first,getString(R.string.failed)), context,)
+            }
         }
     }
 
