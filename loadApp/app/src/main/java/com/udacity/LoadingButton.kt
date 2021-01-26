@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
+import androidx.core.content.withStyledAttributes
 import kotlin.properties.Delegates
 
 
@@ -17,6 +18,13 @@ private const val DURATION: Long = 2000
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+    private var buttonBackgroundColor=0
+    private var buttonTextColor=0
+    private var buttonLoadingBackgroundColor=0
+    private var buttonArchColor=0
+
+
+
     private var widthSize = 0
     private var heightSize = 0
 
@@ -53,28 +61,35 @@ class LoadingButton @JvmOverloads constructor(
     init {
         valueAnimator.interpolator = LinearInterpolator()
         valueAnimator.duration = DURATION
+
+        context.withStyledAttributes(attrs,R.styleable.LoadingButton){
+          buttonBackgroundColor=getColor(R.styleable.LoadingButton_backgroundColor,0)
+          buttonLoadingBackgroundColor=getColor(R.styleable.LoadingButton_loadingBackgroundColor,0)
+          buttonTextColor=getColor(R.styleable.LoadingButton_textColor,0)
+          buttonArchColor=getColor(R.styleable.LoadingButton_loadingArchColor,0)
+        }
     }
 
 
     private val paintRect: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = context.getColor(R.color.colorPrimary)
+        color = buttonBackgroundColor
     }
 
     private val paintText = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER
-        color = context.getColor(R.color.white)
+        color = buttonTextColor
         textSize = resources.getDimension(R.dimen.default_text_size)
     }
 
     private val paintLoadingRect = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = context.getColor(R.color.green)
+        color = buttonLoadingBackgroundColor
     }
 
     private val paintLoadingArch = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = context.getColor(R.color.colorAccent)
+        color = buttonArchColor
     }
 
 
