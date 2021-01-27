@@ -3,15 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".DetailActivity"
+        app:layoutDescription="@xml/content_detail_scene"
         tools:showIn="@layout/activity_detail">
 
         <TextView
@@ -23,6 +20,8 @@
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/roboto"
             android:text="@string/file_name"
+            android:clickable="true"
+            android:focusable="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintEnd_toStartOf="@+id/textViewFileNameValue"
             app:layout_constraintHorizontal_bias="0.0"
@@ -87,5 +86,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>
