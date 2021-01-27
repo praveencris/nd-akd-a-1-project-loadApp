@@ -11,11 +11,12 @@ import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
+import androidx.core.animation.doOnRepeat
 import androidx.core.content.withStyledAttributes
 import kotlin.properties.Delegates
 
 
-private const val DURATION: Long = 3000
+private const val DURATION: Long = 4000
 
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
