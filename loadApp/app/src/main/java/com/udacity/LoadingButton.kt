@@ -1,5 +1,6 @@
 package com.udacity
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -8,12 +9,13 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import androidx.core.content.withStyledAttributes
 import kotlin.properties.Delegates
 
 
-private const val DURATION: Long = 2000
+private const val DURATION: Long = 3000
 
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -46,9 +48,10 @@ class LoadingButton @JvmOverloads constructor(
                 valueAnimator.start()
             }
             ButtonState.Completed -> {
-                invalidate()
+                valueAnimator.cancel()
                 valueAnimator.duration = 0
                 animatedWidth = 0.0f
+                invalidate()
             }
             ButtonState.Clicked -> {
                 valueAnimator.duration = DURATION
@@ -60,6 +63,7 @@ class LoadingButton @JvmOverloads constructor(
 
     init {
         valueAnimator.interpolator = LinearInterpolator()
+        valueAnimator.repeatCount=Animation.INFINITE
         valueAnimator.duration = DURATION
 
         context.withStyledAttributes(attrs,R.styleable.LoadingButton){
