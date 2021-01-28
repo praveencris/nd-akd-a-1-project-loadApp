@@ -88,19 +88,14 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             binding.contentMain.customButton.setState(ButtonState.Completed)
-
+            val notificationManager: NotificationManager = ContextCompat.getSystemService(
+                context!!,
+                NotificationManager::class.java
+            ) as NotificationManager
             if (id == downloadID) {
-                val notificationManager: NotificationManager = ContextCompat.getSystemService(
-                    context!!,
-                    NotificationManager::class.java
-                ) as NotificationManager
                 notificationManager.sendNotification(
                     messageAndContentTextPair.second,Pair(messageAndContentTextPair.first,getString(R.string.success)), context,)
             } else {
-                val notificationManager: NotificationManager = ContextCompat.getSystemService(
-                    context!!,
-                    NotificationManager::class.java
-                ) as NotificationManager
                 notificationManager.sendNotification(
                     messageAndContentTextPair.second,Pair(messageAndContentTextPair.first,getString(R.string.failed)), context,)
             }
@@ -123,15 +118,7 @@ class MainActivity : AppCompatActivity() {
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
     }
 
-    companion object {
-        private const val URL_GLIDE =
-            "https://github.com/bumptech/glide/archive/master.zip"
-        private const val URL_LOAD_APP =
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
-        private const val URL_RETROFIT =
-            "https://github.com/square/retrofit/archive/master.zip"
-        private const val CHANNEL_ID = "channelId"
-    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -160,7 +147,15 @@ class MainActivity : AppCompatActivity() {
                         as NotificationManager
             notificationManager.createNotificationChannel(notificationChannel)
         }
+    }
 
-
+    companion object {
+        private const val URL_GLIDE =
+            "https://github.com/bumptech/glide/archive/master.zip"
+        private const val URL_LOAD_APP =
+            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
+        private const val URL_RETROFIT =
+            "https://github.com/square/retrofit/archive/master.zip"
+        private const val CHANNEL_ID = "channelId"
     }
 }

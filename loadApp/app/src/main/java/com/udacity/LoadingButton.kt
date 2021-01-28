@@ -1,6 +1,5 @@
 package com.udacity
 
-import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -11,28 +10,24 @@ import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
-import androidx.core.animation.doOnRepeat
 import androidx.core.content.withStyledAttributes
 import kotlin.properties.Delegates
 
 
-private const val DURATION: Long = 4000
-
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private var buttonBackgroundColor=0
-    private var buttonTextColor=0
-    private var buttonLoadingBackgroundColor=0
-    private var buttonArchColor=0
-
+    private var buttonBackgroundColor = 0
+    private var buttonTextColor = 0
+    private var buttonLoadingBackgroundColor = 0
+    private var buttonArchColor = 0
 
 
     private var widthSize = 0
     private var heightSize = 0
 
     private val valueAnimator: ValueAnimator = ValueAnimator()
-    private var animatedWidth: Float = 0.0f;
+    private var animatedWidth: Float = 0.0f
     private lateinit var rectF: RectF
 
 
@@ -56,7 +51,12 @@ class LoadingButton @JvmOverloads constructor(
             }
             ButtonState.Clicked -> {
                 valueAnimator.duration = DURATION
-                rectF = RectF(widthSize.toFloat() - 200F, heightSize.toFloat()/2-40F, widthSize.toFloat() - 120F, heightSize.toFloat()/2+40F)
+                rectF = RectF(
+                    widthSize.toFloat() - 200F,
+                    heightSize.toFloat() / 2 - 40F,
+                    widthSize.toFloat() - 120F,
+                    heightSize.toFloat() / 2 + 40F
+                )
             }
         }
     }
@@ -64,14 +64,15 @@ class LoadingButton @JvmOverloads constructor(
 
     init {
         valueAnimator.interpolator = LinearInterpolator()
-        valueAnimator.repeatCount=Animation.INFINITE
+        valueAnimator.repeatCount = Animation.INFINITE
         valueAnimator.duration = DURATION
 
-        context.withStyledAttributes(attrs,R.styleable.LoadingButton){
-          buttonBackgroundColor=getColor(R.styleable.LoadingButton_backgroundColor,0)
-          buttonLoadingBackgroundColor=getColor(R.styleable.LoadingButton_loadingBackgroundColor,0)
-          buttonTextColor=getColor(R.styleable.LoadingButton_textColor,0)
-          buttonArchColor=getColor(R.styleable.LoadingButton_loadingArchColor,0)
+        context.withStyledAttributes(attrs, R.styleable.LoadingButton) {
+            buttonBackgroundColor = getColor(R.styleable.LoadingButton_backgroundColor, 0)
+            buttonLoadingBackgroundColor =
+                getColor(R.styleable.LoadingButton_loadingBackgroundColor, 0)
+            buttonTextColor = getColor(R.styleable.LoadingButton_textColor, 0)
+            buttonArchColor = getColor(R.styleable.LoadingButton_loadingArchColor, 0)
         }
     }
 
@@ -100,43 +101,56 @@ class LoadingButton @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        when (buttonState) {
-            ButtonState.Completed -> {
-                canvas?.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paintRect)
+        canvas?.let {
+            when (buttonState) {
+                ButtonState.Completed -> {
+                    drawOnComplete(canvas)
+                }
+                ButtonState.Loading -> {
+                    drawOnLoading(canvas)
+                }
+                else -> {
+                    drawOnComplete(canvas)
+                }
+            }
 
-                val textHeight = paintText.descent() - paintText.ascent()
-                //Then, based on the height, we calculate the offset:
-                val textOffset = textHeight / 2 - paintText.descent()
-                //And finally, we add the offset to the y coordinate when drawing the text:
-                canvas?.drawText(
-                    context.getString(R.string.download),
-                    widthSize.toFloat() / 2,
-                    heightSize.toFloat() / 2 + textOffset,
-                    paintText
-                )
-            }
-            ButtonState.Loading -> {
-                canvas?.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paintRect)
-                canvas?.drawRect(0f, 0f, animatedWidth, height.toFloat(), paintLoadingRect)
-                val textHeight = paintText.descent() - paintText.ascent()
-                //Then, based on the height, we calculate the offset:
-                val textOffset = textHeight / 2 - paintText.descent()
-                //And finally, we add the offset to the y coordinate when drawing the text:
-                canvas?.drawText(
-                    context.getString(R.string.button_loading),
-                    widthSize.toFloat() / 2,
-                    heightSize.toFloat() / 2 + textOffset,
-                    paintText
-                )
-                canvas?.drawArc(
-                    rectF,
-                    0F, (animatedWidth / widthSize) * 360,
-                    true,
-                    paintLoadingArch
-                )
-            }
         }
 
+    }
+
+    private fun drawOnLoading(canvas: Canvas) {
+        canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paintRect)
+        canvas.drawRect(0f, 0f, animatedWidth, height.toFloat(), paintLoadingRect)
+        val textHeight = paintText.descent() - paintText.ascent()
+        //Then, based on the height, we calculate the offset:
+        val textOffset = textHeight / 2 - paintText.descent()
+        //And finally, we add the offset to the y coordinate when drawing the text:
+        canvas.drawText(
+            context.getString(R.string.button_loading),
+            widthSize.toFloat() / 2,
+            heightSize.toFloat() / 2 + textOffset,
+            paintText
+        )
+        canvas.drawArc(
+            rectF,
+            0F, (animatedWidth / widthSize) * 360,
+            true,
+            paintLoadingArch
+        )
+    }
+
+    private fun drawOnComplete(canvas: Canvas) {
+        canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paintRect)
+        val textHeight = paintText.descent() - paintText.ascent()
+        //Then, based on the height, we calculate the offset:
+        val textOffset = textHeight / 2 - paintText.descent()
+        //And finally, we add the offset to the y coordinate when drawing the text:
+        canvas.drawText(
+            context.getString(R.string.download),
+            widthSize.toFloat() / 2,
+            heightSize.toFloat() / 2 + textOffset,
+            paintText
+        )
     }
 
 
@@ -158,6 +172,8 @@ class LoadingButton @JvmOverloads constructor(
         buttonState = state
     }
 
-
+    companion object {
+        private const val DURATION: Long = 4000
+    }
 }
 
